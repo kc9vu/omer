@@ -11,6 +11,33 @@ pub enum Omer<T> {
     More(Vec<T>),
 }
 
+impl<T> Omer<T> {
+    /// 返回第一个可用值的引用, 没有则返回 None
+    pub fn get(&self) -> Option<&T> {
+        match self {
+            Self::One(t) => Some(t),
+            Self::More(v) => v.first(),
+        }
+    }
+
+    /// 消耗 Omer, 返回第一个可用的值, 没有则返回 None
+    pub fn take(self) -> Option<T> {
+        match self {
+            Self::One(t) => Some(t),
+            Self::More(v) => v.into_iter().next(),
+        }
+    }
+}
+
+impl<T> Omer<T>
+where
+    T: Default,
+{
+    pub fn default_value() -> Self {
+        Self::One(T::default())
+    }
+}
+
 impl<T> Clone for Omer<T>
 where
     T: Clone,
@@ -23,12 +50,9 @@ where
     }
 }
 
-impl<T> Default for Omer<T>
-where
-    T: Default,
-{
+impl<T> Default for Omer<T> {
     fn default() -> Self {
-        Self::One(T::default())
+        Self::More(vec![])
     }
 }
 
