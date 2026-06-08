@@ -1,7 +1,7 @@
 use std::fmt;
 
 #[cfg(feature = "serde")]
-use serde::{ser, de};
+use serde::{de, ser};
 #[cfg(feature = "serde")]
 use serde_untagged::UntaggedEnumVisitor;
 
@@ -86,14 +86,14 @@ where
                 )?))
             })
             .borrowed_str(|s| {
-                Ok(Omer::One(T::deserialize(
-                    de::value::StrDeserializer::new(s),
-                )?))
+                Ok(Omer::One(T::deserialize(de::value::StrDeserializer::new(
+                    s,
+                ))?))
             })
             .i32(|value| {
-                Ok(Omer::One(T::deserialize(
-                    de::value::I32Deserializer::new(value),
-                )?))
+                Ok(Omer::One(T::deserialize(de::value::I32Deserializer::new(
+                    value,
+                ))?))
             })
             .map(|map| {
                 Ok(Omer::One(T::deserialize(
